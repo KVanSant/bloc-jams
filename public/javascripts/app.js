@@ -281,7 +281,20 @@ if (document.URL.match(/\/album.html/)) {
 //require('./album');
 //require('./profile');
 
-angular.module('BlocJams', []).controller('Landing.controller', ['$scope', function($scope) {
+blocJams = angular.module('BlocJams', ['ui.router']);
+
+blocJams.config(['$stateProvider', '$locationProvider', function($stateProvider, $locationProvider) {
+  $locationProvider.html5Mode(true);
+
+  $stateProvider.state('landing', {
+    url: '/',
+    controller: 'Landing.controller',
+    templateUrl: '/templates/landing.html'
+  });
+}]);
+
+//Cleaner way to call the controller than crowding it on the module definition.
+blocJams.controller('Landing.controller', ['$scope', function($scope) {
   $scope.subText = "Turn the music up!";
 
   $scope.subTextClicked = function() {
@@ -299,7 +312,19 @@ angular.module('BlocJams', []).controller('Landing.controller', ['$scope', funct
     '/images/album-placeholders/album-8.jpg',
     '/images/album-placeholders/album-9.jpg',
   ];
+
+  $scope.blocShuffle = "Bloc Jams";
+
+  $scope.shuffle = function(o) {
+      for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+      return o;
+  };
 }]);
+
+  
+  
+
+
 });
 
 ;require.register("scripts/collection", function(exports, require, module) {
