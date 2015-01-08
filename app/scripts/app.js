@@ -83,7 +83,7 @@ blocJams.controller('Collection.controller', ['$scope', function($scope) {
 }]);
 
   
-blocJams.controller('Album.controller', ['$scope', function($scope) {
+blocJams.controller('Album.controller', ['$scope', 'SongPlayer', function($scope, SongPlayer) {
   $scope.album = angular.copy(albumPicasso);
 
   var hoveredSong = null;
@@ -98,7 +98,7 @@ blocJams.controller('Album.controller', ['$scope', function($scope) {
   };
 
   $scope.getSongState = function(song) {
-    if (song === playingSong) {
+    if (song === SongPlayer.currentSong && SongPlayer.playing) {
       return 'playing';
     }
     else if (song === hoveredSong) {
@@ -108,11 +108,42 @@ blocJams.controller('Album.controller', ['$scope', function($scope) {
   };
 
   $scope.playSong = function(song) {
-    playingSong = song;
+    SongPlayer.setSong($scope.album, song);
+    SongPlayer.play();
   };
 
   $scope.pauseSong = function(song) {
-    playingSong = null;
+    SongPlayer.pause();
   };
 }]); 
+
+blocJams.controller('PlayerBar.controller', ['$scope', 'SongPlayer', function($scope, SongPlayer) {
+  $scope.songPlayer = SongPlayer;
+}]);
+
+blocJams.service('SongPlayer', function() {
+  return {
+    currentSong: null,
+    currentAlbum: null,
+    playing: false,
+
+    play: function() {
+      this.playing = true;
+    },
+    pause: function() {
+      this.playing = false;
+    },
+    setSong: function(album, song) {
+      this.currentAlbum = album;
+      this.currentSong = song;
+    }
+  };
+});
+
+
+
+
+
+
+
 
